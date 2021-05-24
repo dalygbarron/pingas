@@ -71,12 +71,12 @@ void dither(
         int bottomRight = (i + width + 1) * 4;
         int bottomRighter = (i + width + 2) * 4;
         if (right < max * 4) put(in + right, eR, eG, eB, eA, 4);
-        if (righter < max * 4) put(in + right, eR, eG, eB, eA, 3);
-        if (bottomLeft < max * 4) put(in + bottomLeft, eR, eG, eB, eA, 1);
-        if (bottomLefter < max * 4) put(in + bottomLeft, eR, eG, eB, eA, 2);
+        if (righter < max * 4) put(in + righter, eR, eG, eB, eA, 3);
+        if (bottomLefter < max * 4) put(in + bottomLefter, eR, eG, eB, eA, 1);
+        if (bottomLeft < max * 4) put(in + bottomLeft, eR, eG, eB, eA, 2);
         if (bottom < max * 4) put(in + bottom, eR, eG, eB, eA, 3);
         if (bottomRight < max * 4) put(in + bottomRight, eR, eG, eB, eA, 2);
-        if (bottomRighter < max * 4) put(in + bottomRight, eR, eG, eB, eA, 1);
+        if (bottomRighter < max * 4) put(in + bottomRighter, eR, eG, eB, eA, 1);
         out[i * 4] = cast(qR, rP);
         out[i * 4 + 1] = cast(qG, gP);
         out[i * 4 + 2] = cast(qB, bP);
@@ -124,8 +124,10 @@ int main(int argc, char **argv) {
         return 1;
     }
     // convert the format if needed.
-    float in[width * height * 4];
-    unsigned char out[width * height * 4];
+    float *in = (float *)malloc(sizeof(float) * width * height * 4);
+    unsigned char *out = (unsigned char *)malloc(
+        sizeof(unsigned char) * width * height * 4
+    );
     for (int i = 0; i < width * height; i++) {
         in[i * 4] = ((float)img[i * 4]) / 255;
         in[i * 4 + 1] = ((float)img[i * 4 + 1]) / 255;
@@ -135,5 +137,7 @@ int main(int argc, char **argv) {
     free(img);
     dither(in, out, width, height, &format);
     format.packer(out, width, height);
+    free(in);
+    free(out);
 }
 
